@@ -166,8 +166,8 @@ static int upload_progress_handle_request(request_rec *r)
           ctx->r = r;
           apr_pool_cleanup_register(r->pool, ctx, upload_progress_cleanup, apr_pool_cleanup_null);
           ap_add_input_filter("UPLOAD_PROGRESS", NULL, r, r->connection);
-	}
-	CACHE_UNLOCK();
+  }
+  CACHE_UNLOCK();
       }
     }
   }
@@ -212,7 +212,7 @@ upload_progress_config_create_dir(apr_pool_t *p, char *dirspec) {
 }
 
 void *upload_progress_config_create_server(apr_pool_t *p, server_rec *s) {
-	ServerConfig *config = (ServerConfig *)apr_pcalloc(p, sizeof(ServerConfig));
+  ServerConfig *config = (ServerConfig *)apr_pcalloc(p, sizeof(ServerConfig));
         config->cache_file = apr_pstrdup(p, "/tmp/upload_progress_cache");
         config->cache_bytes = 51200;
         apr_pool_create(&config->pool, p);
@@ -467,8 +467,8 @@ static apr_status_t upload_progress_cleanup(void *data)
     /* FIXME: this function should use locking because it modifies node data */
     upload_progress_context_t *ctx = (upload_progress_context_t *)data;
     if (ctx->node) {
-	if(ctx->r->status >= HTTP_BAD_REQUEST) 
-	    ctx->node->err_status = ctx->r->status;
+  if(ctx->r->status >= HTTP_BAD_REQUEST) 
+      ctx->node->err_status = ctx->r->status;
         ctx->node->expires = time(NULL) + 60; /*expires in 60s */
         ctx->node->done = 1;
     }
@@ -483,24 +483,24 @@ static void clean_old_connections(request_rec *r) {
     while(node != NULL) {
         if(time(NULL) > node->expires && node->done == 1 && node->expires != -1) {
             /*clean*/
-	    if(prev == NULL) {
-		/* head */
-		upload_progress_cache_t *cache = fetch_cache(config);
-		cache->head = fetch_node(config, node->next);
-		cache_free(config, node->key);
-		cache_free(config, node);
-		node = cache->head;
-		continue;
-	    } else {
-		prev->next = node->next;
-		cache_free(config, node->key);
-		cache_free(config, node);
-		node = prev;
-		continue;
-	    }
+      if(prev == NULL) {
+    /* head */
+    upload_progress_cache_t *cache = fetch_cache(config);
+    cache->head = fetch_node(config, node->next);
+    cache_free(config, node->key);
+    cache_free(config, node);
+    node = cache->head;
+    continue;
+      } else {
+    prev->next = node->next;
+    cache_free(config, node->key);
+    cache_free(config, node);
+    node = prev;
+    continue;
+      }
         }
-	prev = node;
-	node = fetch_node(config, node->next);
+  prev = node;
+  node = fetch_node(config, node->next);
     }
 }
 
@@ -702,7 +702,7 @@ static int reportuploads_handler(request_rec *r)
     const char *id = get_progress_id(r);
 
     if (id == NULL) {
-	ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+  ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "Upload Progress: Not found id in location with reports enabled. uri=%s", id, r->uri);
         return HTTP_NOT_FOUND;
     } else {
@@ -721,7 +721,7 @@ static int reportuploads_handler(request_rec *r)
     CACHE_LOCK();
     upload_progress_node_t *node = find_node(r, id);
     if (node != NULL) {
-	ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+  ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "Node with id=%s found for report", id);
         received = node->received;
         length = node->length;
