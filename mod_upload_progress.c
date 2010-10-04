@@ -14,7 +14,7 @@
 #include <unistd.h>
 #endif
 
-#define PROGRESS_ID "X-Progress-ID"
+#define PROGRESS_ID "x_progress_id"
 
 #define CACHE_LOCK() do {                                  \
     if (config->cache_lock)                               \
@@ -266,7 +266,7 @@ const char *get_progress_id(request_rec *r) {
         p = r->args;
         do {
             int len = strlen(p);
-            if (len >= 14 && strncasecmp(p, "X-Progress-ID=", 14) == 0) {
+            if (len >= 14 && strncasecmp(p, "x_progress_id=", 14) == 0) {
                 i = 1;
                 break;
             }
